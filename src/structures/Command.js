@@ -1,5 +1,5 @@
 const { Message } = require("discord.js"); // eslint-disable-line
-const CommandUsageParser = require("./CommandUsageParser.js");
+const CommandUsageParser = require("./CommandUsageParser");
 
 class Command {
 
@@ -57,7 +57,7 @@ class Command {
         /**
          * The command parser for the command.
          */
-        this.parser = new CommandUsageParser();
+        this.parser = new CommandUsageParser(this.client);
 
         this.parser.parse(this.usage);
     }

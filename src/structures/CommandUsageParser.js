@@ -2,8 +2,8 @@ const Command = require("./Command.js");
 
 class CommandUsageParser extends Command {
 
-    constructor() {
-        super();
+    constructor(client) {
+        super(client);
         this.total = [];
         this.required = [];
         this.checked = [];
