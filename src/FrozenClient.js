@@ -1,5 +1,5 @@
 const { Client, Message } = require("discord.js"); // eslint-disable-line
-const Command = require("./structures/Command.js");
+const Command = require("./structures/Command.js"); // eslint-disable-line
 const CommandStore = require("./structures/CommandStore.js");
 const AliasStore = require("./structures/AliasStore.js");
 const klaw = require("klaw");
