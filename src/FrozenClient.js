@@ -136,7 +136,7 @@ class FrozenClient {
             fs.mkdir(join(__dirname, "..", "..", "..", "inhibitors", "."), () => {
                 console.log(`${chalk.bgBlueBright("INFO")} Created inhibitors directory... now copying files.`);
                 npc(join(__dirname, ".", "inhibitors"), join(__dirname, "..", "..", "..", "commands", "."), () => {
-                    console.log(`${chalk.bgBlueBright("INFO")} Creation of the inhibitor files completed.`);
+                    this._loadInhibitors();
                 });
             });
         } else { this._loadInhibitors(); }
