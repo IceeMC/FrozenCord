@@ -2,7 +2,7 @@
   "name": "frozencord",
   "version": "1.0.0",
   "description": "A Discord.js command framework for all to use.",
-  "main": "index.js",
+  "main": "src/index.js",
   "types": "src/typings/index.d.ts",
   "dependencies": {
     "chalk": "^2.4.1",
