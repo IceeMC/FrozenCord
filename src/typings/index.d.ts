@@ -7,7 +7,7 @@ declare module "frozencord" {
     } from "discord.js";
 
     export class FrozenClient {
-        public constructor(options: OptionsResolveable);
+        public constructor(options: OptionsObject);
 
         public prefix: string;
         public withTyping: boolean;
