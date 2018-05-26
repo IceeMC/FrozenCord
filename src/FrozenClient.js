@@ -70,7 +70,7 @@ class FrozenClient {
          * The ready message for the bot.
          * @default "Bot Logged in as ${tag} and serving in ${guilds} guilds."
          */
-        this.readyMessage = options.readyMessage ? options.readyMessage : `Bot Logged in as ${this.client.user.tag} and serving in ${this.client.guilds.size > 1 ? `${this.client.guilds.size} guilds` : `1 gnuild`}.`;
+        this.readyMessage = options.readyMessage ? options.readyMessage : `Bot Logged in as ${this.client.user.tag} and serving in ${this.client.guilds.size > 1 ? `${this.client.guilds.size} guilds` : `1 guild`}.`;
 
         /**
          * The presence the bot should startup with.
@@ -119,7 +119,6 @@ class FrozenClient {
     _extractCommands() {
         if (!fs.existsSync(join(__dirname, "..", "..", "..", "commands"))) {
             fs.mkdir(join(__dirname, "..", "..", "..", "commands", "."), () => {
-                console.log(`${chalk.bgBlueBright("INFO")} Created command dir... now copying files.`);
                 npc(join(__dirname, ".", "commands"), join(__dirname, "..", "..", "..", "commands", "."), () => {
                     this._loadCommands();
                 });
@@ -134,8 +133,7 @@ class FrozenClient {
     _extractInhibitors() {
         if (!fs.existsSync(join(__dirname, "..", "..", "..", "inhibitors"))) {
             fs.mkdir(join(__dirname, "..", "..", "..", "inhibitors", "."), () => {
-                console.log(`${chalk.bgBlueBright("INFO")} Created inhibitors directory... now copying files.`);
-                npc(join(__dirname, ".", "inhibitors"), join(__dirname, "..", "..", "..", "commands", "."), () => {
+                npc(join(__dirname, ".", "inhibitors"), join(__dirname, "..", "..", "..", "inhibitors", "."), () => {
                     this._loadInhibitors();
                 });
             });
@@ -191,7 +189,7 @@ class FrozenClient {
         const startTime = Date.now();
         klaw("./inhibitors/")
             .on("data", inhibitorFile => {
-                const i = parse(inhibitorFile);
+                const i = parse(inhibitorFile.path);
                 if (!i.ext || i.ext !== ".js") return;
                 return this._loadInhibitor(i.dir, i.name);
             })

@@ -1,4 +1,4 @@
-const Command = require("../../structures/Command.js");
+const { Command } = require("frozencord"); // eslint-disable-line
 
 class FindUser extends Command {
 

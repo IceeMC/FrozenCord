@@ -7,7 +7,7 @@ declare module "frozencord" {
     } from "discord.js";
 
     export class FrozenClient {
-        public constructor(options: OptionsResolveable);
+        public constructor(options: OptionsObject);
 
         public prefix: string;
         public withTyping: boolean;
@@ -31,7 +31,7 @@ declare module "frozencord" {
         public name: string;
         public description: string;
 
-        public run(command: Command): void | Promise<any>;
+        public run(message: Message, command: Command): void;
     }
 
     // Command
@@ -41,19 +41,19 @@ declare module "frozencord" {
         public client: FrozenClient;
         public name: string;
         public description: string;
-        public aliases: string;
-        public args: ArgsObject[];
-        public botPerms: PermissionsArray[];
-        public userPerms: PermissionsArray[];
+        public aliases: Array<string>;
+        public args: Array<ArgsObject>;
+        public botPerms: Array<Permissions>;
+        public userPerms: Array<Permissions>;
         public ownerOnly: boolean;
         public guildOnly: boolean;
         public disabled: boolean;
 
-        public run(message: Message, args: (string | User)[]): void | Promise<any>;
+        public run(message: Message, args: (string | User)[]): void;
     }
 
     // JSON Object types
-    export type OptionsObject = {
+    type OptionsObject = {
         prefix: string,
         withTyping: boolean
         ownerId: string,
@@ -61,48 +61,46 @@ declare module "frozencord" {
         game: GameObject
     };
 
-    export type GameObject = {
+    type GameObject = {
         name: string,
         url?: string,
         type: "PLAYING" | "STREAMING" | "WATCHING" | "LISTENING" | number
     }
 
-    export type ArgsObject = {
+    type ArgsObject = {
         name: string,
         type: "string" | "user",
         required?: boolean
     }
 
-    // JSON Array types
-    export type PermissionsArray = [
-        "ADMINISTRATOR",
-        "ADD_REACTIONS",
-        "CREATE_INSTANT_INVITE",
-        "KICK_MEMBERS",
-        "BAN_MEMBERS",
-        "MANAGE_CHANNELS",
-        "MANAGE_GUILD",
-        "VIEW_AUDIT_LOG",
-        "VIEW_CHANNEL",
-        "SEND_MESSAGES",
-        "SEND_TTS_MESSAGES",
-        "MANAGE_MESSAGES",
-        "EMBED_LINKS",
-        "ATTACH_FILES",
-        "READ_MESSAGE_HISTORY",
-        "MENTION_EVERYONE",
-        "USE_EXTERNAL_EMOJIS",
-        "CONNECT",
-        "SPEAK",
-        "MUTE_MEMBERS",
-        "DEAFEN_MEMBERS",
-        "MOVE_MEMBERS",
-        "USE_VAD",
-        "CHANGE_NICKNAME",
-        "MANAGE_NICKNAMES",
-        "MANAGE_ROLES",
-        "MANAGE_WEBHOOKS",
+    // Permissions
+    type Permissions = "ADMINISTRATOR" |
+        "ADD_REACTIONS" |
+        "CREATE_INSTANT_INVITE" |
+        "KICK_MEMBERS" |
+        "BAN_MEMBERS" |
+        "MANAGE_CHANNELS" |
+        "MANAGE_GUILD" |
+        "VIEW_AUDIT_LOG" |
+        "VIEW_CHANNEL" |
+        "SEND_MESSAGES" |
+        "SEND_TTS_MESSAGES" |
+        "MANAGE_MESSAGES" |
+        "EMBED_LINKS" |
+        "ATTACH_FILES" |
+        "READ_MESSAGE_HISTORY" |
+        "MENTION_EVERYONE" |
+        "USE_EXTERNAL_EMOJIS" |
+        "CONNECT" |
+        "SPEAK" |
+        "MUTE_MEMBERS" |
+        "DEAFEN_MEMBERS" |
+        "MOVE_MEMBERS" |
+        "USE_VAD" |
+        "CHANGE_NICKNAME" |
+        "MANAGE_NICKNAMES" |
+        "MANAGE_ROLES" |
+        "MANAGE_WEBHOOKS" |
         "MANAGE_EMOJIS"
-    ]
     
 }

@@ -20,7 +20,7 @@ class Command {
         this.disabled = false;
     }
 
-    async run(message, args) { // eslint-disable-line
+    run(message, args) { // eslint-disable-line
         return message.channel.send(`This command has no run method therefor it cannot be ran.`);
     }
 
