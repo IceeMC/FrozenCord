@@ -1,8 +1,23 @@
 {
   "name": "frozencord",
-  "version": "0.0.1",
-  "description": "A Discord.js framework for all to use.",
-  "main": "src/index.js",
+  "version": "1.0.0",
+  "description": "A Discord.js command framework for all to use.",
+  "main": "index.js",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "discord.js": "^11.3.2",
+    "klaw": "^2.1.1",
+    "npc": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^9.6.2",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "typescript": "^2.8.3"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,22 +25,10 @@
     "type": "git",
     "url": "git+https://github.com/IceeMC/FrozenCord.git"
   },
-  "author": "IceeMC",
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/IceeMC/FrozenCord/issues"
   },
-  "homepage": "https://github.com/IceeMC/FrozenCord#readme",
-  "devDependencies": {
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.12.0",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.7.0",
-    "eslint-plugin-standard": "^3.1.0"
-  },
-  "dependencies": {
-    "chalk": "^2.4.1",
-    "discord.js": "^11.3.2",
-    "klaw": "^2.1.1"
-  }
+  "homepage": "https://github.com/IceeMC/FrozenCord#readme"
 }

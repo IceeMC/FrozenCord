@@ -1,6 +1,4 @@
-const FrozenMap = require("../utils/FrozenMap.js");
-
-class AliasStore extends FrozenMap {
+class AliasStore extends Map {
 
     constructor() { // eslint-disable-line
         super();
