@@ -38,41 +38,41 @@ class FrozenClient extends Discord.Client {
 
 
     /**
-     * Loads the options for the bot like ownerId, readyMessage, defaultGame,  and more.
+     * Loads the options for the bot like ownerId, readyMessage, defaultGame, and more.
      * @param {Object} clientOptions The options Object.
      */
-    async _loadOptions(clientOptions) {
+    async _loadOptions({ prefix, withTyping, ownerId, readyMessage, game } = {}) {
         const app = await this.fetchApplication();
 
         /**
          * The prefix for the bot
          * @default "!"
          */
-        this.prefix = clientOptions.prefix || "!";
+        this.prefix = prefix || "!";
 
         /**
         * A boolean to determine if the bot should type while running commands.
         * @default false
         */
-        this.withTyping = clientOptions.withTyping || false;
+        this.withTyping = withTyping || false;
 
         /**
          * The ownerId for the bot if none is provided
          * it gets the owner id from the bot application
          */
-        this.ownerId = clientOptions.ownerId || app.owner.id;
+        this.ownerId = ownerId || app.owner.id;
 
         /**
          * The ready message for the bot.
          * @default "Bot Logged in as ${tag} and serving in ${guilds} guilds."
          */
-        this.readyMessage = clientOptions.readyMessage(this) || `Bot Logged in as ${this.user.tag} and serving in ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`}.`;
+        this.readyMessage = readyMessage || `Bot Logged in as ${this.user.tag} and serving in ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`}.`;
 
         /**
          * The presence the bot should startup with.
          * @default "Streaming with ${guilds}guilds | ${prefix}help"
          */
-        this.game = clientOptions.game || { url: "https://twitch.tv/iceemc", name: `with ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`} | ${this.prefix}help`, type: 1 };
+        this.game = game || { url: "https://twitch.tv/iceemc", name: `with ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`} | ${this.prefix}help`, type: 1 };
     }
 
     /**
@@ -100,8 +100,8 @@ class FrozenClient extends Discord.Client {
      */
     _attachEvents() {
         this.on("ready", async () => {
-            await this._loadOptions(this.options);
-            this.client.user.setActivity(this.game.name, { url: this.game.url, type: this.game.type });
+            await this._loadOptions(this.clientOptions);
+            this.user.setActivity(this.game.name, { url: this.game.url, type: this.game.type });
             console.log(`${chalk.bgBlueBright("INFO")} ${this.readyMessage}`);
         });
         this.on("message", message => this._handleMessage(message));
@@ -229,7 +229,7 @@ class FrozenClient extends Discord.Client {
                 await cmd.run(message, checkArgs.args);
 
                 // Run all inhibitors for the bot after the command has finished.
-                this.inhibitors.forEach(i => i.run(cmd));
+                this.inhibitors.forEach(i => i.run(message, cmd));
                 message.channel.stopTyping(true);
 
                 // After the command clean up the args.

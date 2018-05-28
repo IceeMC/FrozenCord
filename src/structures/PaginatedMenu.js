@@ -43,9 +43,9 @@ class PaginatedMenu {
      * @param {Array} pages An object of pages.
      * @returns {number} The new length of the pages.
      */
-    addPages(...pages) {
+    addPages(pages) {
         for (const page of pages) {
-            this.pages.push(...page);
+            this.pages.push(page);
         }
         return this.pages.length;
     }
@@ -82,6 +82,7 @@ class PaginatedMenu {
      * Runs the pagination session.
      */
     async start() {
+        console.log(this.pages);
         if (!this.pages[0]) throw new Error("Pages cannot be empty.");
         if (!this.enabled) await this._switchPage(0);
         this._reactionCollector = this._sent.createReactionCollector((reaction, user) => this.emojis.includes(reaction.emoji.name) && user.id === this.reactor.id && reaction.remove(user).catch(() => {}), { time: 864e5 });
@@ -116,7 +117,8 @@ class PaginatedMenu {
      */
     async _switchPage(pageNumber) {
         // Wait for valid page
-        if (this.invalidPage(pageNumber)) return;
+        console.log(this._invalidPage(pageNumber));
+        if (this._invalidPage(pageNumber)) return;
 
         /* Set the current page to the one the
         * user wants to switch too.
@@ -124,32 +126,30 @@ class PaginatedMenu {
         this.current = pageNumber;
 
         if (this.enabled) {
-            this._sent.edit(this._createEmbed(this.pages[this.current]));
+            this._sent.edit(
+                new RichEmbed()
+                    .addField(...this.pages[0])
+                    .setColor(this.color || 0xffffff)
+                    .setTitle(this.title || null)
+                    .setFooter(`Showing page ${this.current + 1} of ${this.pages.length}`)
+            );
             return;
         } else {
             // Enable the paginator, send the message, and react.
             this.enabled = true;
-            this._sent = await this.message.channel.send(this._createEmbed(this.pages[0]));
+            this._sent = await this.message.channel.send(
+                new RichEmbed()
+                    .addField(this.pages[0].title, this.pages[0].description)
+                    .setColor(this.color || 0xffffff)
+                    .setTitle(this.title || null)
+                    .setFooter(`Showing page ${this.current + 1} of ${this.pages.length}`)
+            );
             for (const emoji of this.emojis) {
-                if (["⏪", "⏩", "🔢"] && this.pages.length < 2) {} else {
+                if (["⏪", "⏩", "🔢"] && this.pages.length < 2) { continue; } else {
                     await this._sent.react(emoji);
                 }
             }
         }
-    }
-
-    /**
-     * Creates an embed for a page.
-     * @param {Object} page The page object to turn into an embed.
-     * @private
-     * @returns {RichEmbed} A new rich embed.
-     */
-    _createEmbed(page) {
-        return new RichEmbed()
-            .addField(...page)
-            .setColor(this.color || 0xffffff)
-            .setTitle(this.title || null)
-            .setFooter(`Showing page ${this.current + 1} of ${this.pages.length}`);
     }
 
     async _forward() {

@@ -26,6 +26,7 @@ class CommandArgs {
     }
 
     check(message, command, args, success = () => {}, failed = () => {}) {
+        if (command.args.length === 0) return success();
         this.message = message;
         this.msgArgs = args;
         for (let i = 0; i < command.args.length; i++) {
