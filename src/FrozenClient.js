@@ -11,15 +11,11 @@ const { join, parse, sep } = require("path");
 const fs = require("fs");
 const npc = require("ncp").ncp; // eslint-disable-line
 
-class FrozenClient {
+class FrozenClient extends Discord.Client {
 
-    constructor(options) {
-        this.options = options;
-
-        /**
-         * The Discord.JS Client used to create this framework.
-         */
-        this.client = new Discord.Client();
+    constructor(clientOptions) {
+        super();
+        this.clientOptions = clientOptions;
 
         /**
          * Stores all of the bots commands.
@@ -43,40 +39,40 @@ class FrozenClient {
 
     /**
      * Loads the options for the bot like ownerId, readyMessage, defaultGame,  and more.
-     * @param {Object} options The options Object.
+     * @param {Object} clientOptions The options Object.
      */
-    async _loadOptions(options) {
-        const app = await this.client.fetchApplication();
+    async _loadOptions(clientOptions) {
+        const app = await this.fetchApplication();
 
         /**
          * The prefix for the bot
          * @default "!"
          */
-        this.prefix = options.prefix ? options.prefix : "!";
+        this.prefix = clientOptions.prefix || "!";
 
         /**
         * A boolean to determine if the bot should type while running commands.
-        * @default "false"
+        * @default false
         */
-        this.withTyping = options.withTyping ? options.withTyping : false;
+        this.withTyping = clientOptions.withTyping || false;
 
         /**
          * The ownerId for the bot if none is provided
-         * it gets the owner id from the bot application.
+         * it gets the owner id from the bot application
          */
-        this.ownerId = options.ownerId ? options.ownerId : app.owner.id;
+        this.ownerId = clientOptions.ownerId || app.owner.id;
 
         /**
          * The ready message for the bot.
          * @default "Bot Logged in as ${tag} and serving in ${guilds} guilds."
          */
-        this.readyMessage = options.readyMessage ? options.readyMessage : `Bot Logged in as ${this.client.user.tag} and serving in ${this.client.guilds.size > 1 ? `${this.client.guilds.size} guilds` : `1 guild`}.`;
+        this.readyMessage = clientOptions.readyMessage(this) || `Bot Logged in as ${this.user.tag} and serving in ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`}.`;
 
         /**
          * The presence the bot should startup with.
-         * @default "Streaming with ${guild }guilds | ${prefix}help"
+         * @default "Streaming with ${guilds}guilds | ${prefix}help"
          */
-        this.game = options.game ? options.game : { url: "https://twitch.tv/iceemc", name: `with ${this.client.guilds.size > 1 ? `${this.client.guilds.size} guilds` : `1 guild`} | ${this.prefix}help`, type: 1 };
+        this.game = clientOptions.game || { url: "https://twitch.tv/iceemc", name: `with ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`} | ${this.prefix}help`, type: 1 };
     }
 
     /**
@@ -87,7 +83,7 @@ class FrozenClient {
      * @param {string} token The token to log the bot in with.
      */
     login(token) {
-        // Load or extract inhibitors
+        // Load or extract inhibitors and commands too.
         this._extractCommands();
         this._extractInhibitors();
 
@@ -95,7 +91,7 @@ class FrozenClient {
         this._attachEvents();
 
         // Log the bot in
-        this.client.login(token);
+        super.login(token);
     }
 
     /**
@@ -103,12 +99,12 @@ class FrozenClient {
      * @private
      */
     _attachEvents() {
-        this.client.on("ready", async () => {
+        this.on("ready", async () => {
             await this._loadOptions(this.options);
             this.client.user.setActivity(this.game.name, { url: this.game.url, type: this.game.type });
             console.log(`${chalk.bgBlueBright("INFO")} ${this.readyMessage}`);
         });
-        this.client.on("message", message => this._handleMessage(message));
+        this.on("message", message => this._handleMessage(message));
         process.on("unhandledRejection", e => console.log(`${chalk.bgRedBright("ERROR")}${chalk.redBright(e.stack)}`));
     }
 
@@ -226,7 +222,7 @@ class FrozenClient {
             if (cmd.guildOnly && !message.guild) { message.channel.stopTyping(true); return; }
             if (!message.guild.me.permissions.has(cmd.botPerms) || !message.member.permissions.has(cmd.userPerms)) { message.channel.stopTyping(true); return; }
 
-            const checkArgs = new CommandArgs(this.client);
+            const checkArgs = new CommandArgs(this);
             checkArgs.run(cmd);
             checkArgs.check(message, cmd, args, async () => {
                 // Run the command then stop typing after it is ran.
