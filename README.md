@@ -3,6 +3,7 @@ A Discord.js framework for all to use.
 
 # Installing
 To install *dev version* run: `npm install https://github.com/IceeMC/FrozenCord`
+
 To install run `npm install frozencord` *Not Public yet*
 
 # Heroku user?
