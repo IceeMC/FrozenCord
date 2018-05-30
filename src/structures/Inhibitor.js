@@ -10,7 +10,7 @@ class Inhibitor {
         this.description = "";
     }
 
-    run(command) { // eslint-disable-line
+    run(message, command) { // eslint-disable-line
         throw new Error(`Inhibitor run code must be provided for class: ${this.constructor.name}`);
     }
 
