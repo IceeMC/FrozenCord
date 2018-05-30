@@ -8,7 +8,7 @@
     "chalk": "^2.4.1",
     "discord.js": "^11.3.2",
     "klaw": "^2.1.1",
-    "npc": "0.0.1"
+    "ncp": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^9.6.2",
