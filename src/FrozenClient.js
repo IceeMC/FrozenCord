@@ -8,7 +8,7 @@ const klaw = require("klaw");
 const chalk = require("chalk").default;
 const { join, parse, sep } = require("path");
 const fs = require("fs");
-const npc = require("ncp").ncp; // eslint-disable-line
+const { ncp } = require("ncp"); // eslint-disable-line
 
 class FrozenClient extends Discord.Client {
 
@@ -82,19 +82,12 @@ class FrozenClient extends Discord.Client {
      * @param {string} token The token to log the bot in with.
      */
     async login(token) {
-        super.login(token)
-            .then(() => {
-                // Load or extract inhibitors and commands too.
-                this._extractCommands();
-                this._extractInhibitors();
+        this._extractCommands();
+        this._extractInhibitors();
 
-                // Add the 2 event listeners
-                this._attachEvents();
-            })
-            .catch(() => {
-                console.log("Invalid login details provided");
-                process.exit(0);
-            });
+        // Add the 2 event listeners
+        this._attachEvents();
+        return super.login(token);
     }
 
     /**
@@ -132,7 +125,7 @@ class FrozenClient extends Discord.Client {
     _extractCommands() {
         if (!fs.existsSync(join(__dirname, "..", "..", "..", "commands"))) {
             fs.mkdir(join(__dirname, "..", "..", "..", "commands", "."), () => {
-                npc(join(__dirname, ".", "commands"), join(__dirname, "..", "..", "..", "commands", "."), () => {
+                ncp(join(__dirname, ".", "commands"), join(__dirname, "..", "..", "..", "commands", "."), () => {
                     this._loadCommands();
                 });
             });
@@ -146,7 +139,7 @@ class FrozenClient extends Discord.Client {
     _extractInhibitors() {
         if (!fs.existsSync(join(__dirname, "..", "..", "..", "inhibitors"))) {
             fs.mkdir(join(__dirname, "..", "..", "..", "inhibitors", "."), () => {
-                npc(join(__dirname, ".", "inhibitors"), join(__dirname, "..", "..", "..", "inhibitors", "."), () => {
+                ncp(join(__dirname, ".", "inhibitors"), join(__dirname, "..", "..", "..", "inhibitors", "."), () => {
                     this._loadInhibitors();
                 });
             });
