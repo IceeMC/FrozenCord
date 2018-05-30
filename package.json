@@ -1,11 +1,10 @@
 {
   "name": "frozencord",
   "version": "1.0.0",
-  "description": "A Discord.js command framework for all to use.",
+  "description": "A Discord.js command framework.",
   "main": "src/index.js",
   "types": "src/typings/index.d.ts",
   "dependencies": {
-    "array-unique": "^0.3.2",
     "chalk": "^2.4.1",
     "discord.js": "^11.3.2",
     "klaw": "^2.1.1",

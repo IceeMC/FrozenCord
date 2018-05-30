@@ -1,8 +1,9 @@
 # FrozenCord
-A Discord.js framework for all to use.
+A Discord.js command framework.
 
 # Installing
 To install *dev version* run: `npm install https://github.com/IceeMC/FrozenCord`
+
 To install run `npm install frozencord`
 
 # Features
@@ -15,7 +16,9 @@ More coming soon.
 
 # Heroku user?
 Step 1: Download this repo on your pc/mac.
+
 Step 2: Copy the `commands` and `inhibitors` directory located in the `src` directory to the repo you want the bot in.
+
 Step 3: Push the changes and run the commands below.
 - First off run `git add .`
 - After that then run `git commit -am "Add commands and inhibitors"`
