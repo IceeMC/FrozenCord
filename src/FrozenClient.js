@@ -80,6 +80,7 @@ class FrozenClient extends Discord.Client {
      * this also attaches 2 event listeners one is ready,
      * and the other listener is message.
      * @param {string} token The token to log the bot in with.
+     * @returns {Promise<string>} A logged in client.
      */
     async login(token) {
         this._extractCommands();
