@@ -11,7 +11,6 @@ class Command {
     constructor(client) {
         this.category = "";
         this.client = client;
-        this.arguments = new Arguments(client);
         this.name = "";
         this.description = "";
         this.aliases = [];

@@ -234,20 +234,21 @@ class FrozenClient extends Discord.Client {
             if (cmd.guildOnly && !message.guild) { message.channel.stopTyping(true); return; }
             if (!message.guild.me.permissions.has(cmd.botPerms) || !message.member.permissions.has(cmd.userPerms)) { message.channel.stopTyping(true); return; }
 
-            cmd.arguments.run(cmd);
-            cmd.arguments.check(message, cmd, args, async () => {
+            const Arguments = new (require("./structures/Arguments.js"))(this);
+            Arguments.run(cmd);
+            Arguments.check(message, cmd, args, async () => {
                 // Run the command then stop typing after it is ran.
-                await cmd.run(message.guild, cmd.arguments.args);
+                cmd.run(message, Arguments.args);
 
                 // Run all inhibitors for the bot after the command has finished.
-                this.inhibitors.forEach(i => i.run(message, cmd));
+                this.inhibitors.forEach(async i => { await i.run(message, cmd); });
                 message.channel.stopTyping(true);
 
                 // After the command clean up the args.
-                cmd.arguments.cleanUp();
+                Arguments.cleanUp();
             }, () => {
                 message.channel.stopTyping(true);
-                cmd.arguments.cleanUp();
+                Arguments.cleanUp();
             });
         }
     }
