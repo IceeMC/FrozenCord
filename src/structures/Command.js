@@ -1,4 +1,5 @@
 const FrozenClient = require("../FrozenClient.js"); // eslint-disable-line
+const Arguments = require("./Arguments.js");
 
 /**
  * A class that is used for commands.
@@ -8,7 +9,9 @@ const FrozenClient = require("../FrozenClient.js"); // eslint-disable-line
 class Command {
 
     constructor(client) {
+        this.category = "";
         this.client = client;
+        this.arguments = new Arguments(client);
         this.name = "";
         this.description = "";
         this.aliases = [];

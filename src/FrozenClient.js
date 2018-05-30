@@ -1,7 +1,6 @@
 const Discord = require("discord.js"); // eslint-disable-line
 const Command = require("./structures/Command.js"); // eslint-disable-line
 const CommandStore = require("./structures/CommandStore.js");
-const CommandArgs = require("./structures/CommandArgs.js");
 const AliasStore = require("./structures/AliasStore.js");
 const Inhibitor = require("./structures/Inhibitor.js"); // eslint-disable-line
 const InhibitorStore = require("./structures/InhibitorStore.js"); // eslint-disable-line
@@ -66,7 +65,7 @@ class FrozenClient extends Discord.Client {
          * The ready message for the bot.
          * @default "Bot Logged in as ${tag} and serving in ${guilds} guilds."
          */
-        this.readyMessage = readyMessage || `Bot Logged in as ${this.user.tag} and serving in ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`}.`;
+        this.readyMessage = readyMessage(this) || `Bot Logged in as ${this.user.tag} and serving in ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`}.`;
 
         /**
          * The presence the bot should startup with.
@@ -82,16 +81,34 @@ class FrozenClient extends Discord.Client {
      * and the other listener is message.
      * @param {string} token The token to log the bot in with.
      */
-    login(token) {
-        // Load or extract inhibitors and commands too.
-        this._extractCommands();
-        this._extractInhibitors();
+    async login(token) {
+        super.login(token)
+            .then(() => {
+                // Load or extract inhibitors and commands too.
+                this._extractCommands();
+                this._extractInhibitors();
 
-        // Add the 2 event listeners
-        this._attachEvents();
+                // Add the 2 event listeners
+                this._attachEvents();
+            })
+            .catch(() => {
+                console.log("Invalid login details provided");
+                process.exit(0);
+            });
+    }
 
-        // Log the bot in
-        super.login(token);
+    /**
+     * Gets the category the command belongs in.
+     * @param {string} parsedPath The path to the command.
+     * @returns {string} The category
+     */
+    _getCategory(parsedPath) {
+        const dirs = fs.readdirSync("./commands/");
+        for (let i = 0; i < dirs.length; i++) {
+            for (const pathSplit of parsedPath.split("/")) {
+                if (pathSplit === dirs[i]) return dirs[i];
+            }
+        }
     }
 
     /**
@@ -145,6 +162,7 @@ class FrozenClient extends Discord.Client {
     _loadCommand(path, command) {
         const c = new (require(`${path}${sep}${command}`))(this);
         this.commands.set(c.name, c);
+        this.commands.get(c.name).category = this._getCategory(path);
         for (const alias of c.aliases) {
             this.aliases.set(alias, c);
         }
@@ -222,21 +240,20 @@ class FrozenClient extends Discord.Client {
             if (cmd.guildOnly && !message.guild) { message.channel.stopTyping(true); return; }
             if (!message.guild.me.permissions.has(cmd.botPerms) || !message.member.permissions.has(cmd.userPerms)) { message.channel.stopTyping(true); return; }
 
-            const checkArgs = new CommandArgs(this);
-            checkArgs.run(cmd);
-            checkArgs.check(message, cmd, args, async () => {
+            cmd.arguments.run(cmd);
+            cmd.arguments.check(message, cmd, args, async () => {
                 // Run the command then stop typing after it is ran.
-                await cmd.run(message, checkArgs.args);
+                await cmd.run(message.guild, cmd.arguments.args);
 
                 // Run all inhibitors for the bot after the command has finished.
                 this.inhibitors.forEach(i => i.run(message, cmd));
                 message.channel.stopTyping(true);
 
                 // After the command clean up the args.
-                checkArgs.cleanUp();
+                cmd.arguments.cleanUp();
             }, () => {
                 message.channel.stopTyping(true);
-                checkArgs.cleanUp();
+                cmd.arguments.cleanUp();
             });
         }
     }

@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "types": "src/typings/index.d.ts",
   "dependencies": {
+    "array-unique": "^0.3.2",
     "chalk": "^2.4.1",
     "discord.js": "^11.3.2",
     "klaw": "^2.1.1",

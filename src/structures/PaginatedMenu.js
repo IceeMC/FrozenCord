@@ -128,7 +128,7 @@ class PaginatedMenu {
         if (this.enabled) {
             this._sent.edit(
                 new RichEmbed()
-                    .addField(...this.pages[0])
+                    .addField(this.pages[this.current].title, this.pages[this.current].description)
                     .setColor(this.color || 0xffffff)
                     .setTitle(this.title || null)
                     .setFooter(`Showing page ${this.current + 1} of ${this.pages.length}`)
@@ -189,6 +189,16 @@ To cancel type \`cancel\` or \`stop\`.`);
             temp.delete();
             this._messageCollector.stop();
             this._messageCollector = null;
+        });
+        this._messageCollector.on("end", (collected) => {
+            if (collected.size < 1) {
+                this.message.channel.send(`${this.reactor}, The page selection timed out.`).then(m => {
+                    setTimeout(() => {
+                        m.delete();
+                        temp.delete();
+                    }, 1500);
+                }).catch(() => {});
+            }
         });
     }
 

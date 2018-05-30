@@ -15,20 +15,22 @@ declare module "frozencord" {
         Role
     } from "discord.js";
 
+    // FrozenClient class it extends the Discord.js Client
     export class FrozenClient extends Client {
         public constructor(clientOptions: ClientOptionsObject);
 
-        public prefix: string;
-        public withTyping: boolean;
-        public readyMessage: string;
-        public ownerId: string;
-        public game: GameObject;
+        public readonly clientOptions;
+        public readonly prefix: string;
+        public readonly withTyping: boolean;
+        public readonly readyMessage: string;
+        public readonly ownerId: string;
+        public readonly game: GameObject;
 
-        public commands: Map<string, Command>;
-        public aliases: Map<string, Command>;
-        public inhibitors: Map<string, Inhibitor>;
+        public readonly commands: Map<string, Command>;
+        public readonly aliases: Map<string, Command>;
+        public readonly inhibitors: Map<string, Inhibitor>;
 
-        public login(token): void;
+        public login(token: string): Promise<string>;
         public unloadCommand(command: Command): void;
 
         // D.JS events
@@ -102,21 +104,24 @@ declare module "frozencord" {
         public once(event: "warn", listener: (info: string) => void): this;
     }
 
-    // Inhibitor
+    // Inhibitor class
     export class Inhibitor {
         public constructor(client: FrozenClient);
 
-        public name: string;
-        public description: string;
+        public readonly client: FrozenClient;
+        public readonly name: string;
+        public readonly description: string;
 
-        public run(message: Message, command: Command): void;
+        run(message: Message, command: Command): Promise<void> | void;
     }
 
-    // Command
+    // Command class
     export class Command {
         public constructor(client: FrozenClient);
 
-        public client: FrozenClient;
+        public readonly category;
+        public readonly client: FrozenClient;
+        public readonly arguments: Arguments;
         public name: string;
         public description: string;
         public aliases: Array<string>;
@@ -127,34 +132,51 @@ declare module "frozencord" {
         public guildOnly: boolean;
         public disabled: boolean;
 
-        public run(message: Message, args: (string | User)[]): void;
+        run(message: Message, args: Array<any>): Promise<Message | Array<Message> | void>;
     }
 
+    // PaginatedMenu class
     export class PaginatedMenu {
         public constructor(message: Message);
 
-        public message: Message;
-        public reactor: User;
-        public enabled: boolean;
-        public current: number;
-        public pages: Array<PageObject>;
+        public readonly message: Message;
+        public readonly reactor: User;
+        public readonly enabled: boolean;
+        public readonly current: number;
+        public readonly pages: Array<PageObject>;
 
-        public addPage(title: string, description: string): number;
-        public addPages(...pages: Array<PageObject>): void;
-        public setTitle(title: string): void;
-        public setColor(color: number): void;
-        public setDescription(description: string): void;
-        public start(): void;
+        addPage(title: string, description: string): number;
+        addPages(pages: Array<PageObject>): void;
+        setTitle(title: string): void;
+        setColor(color: number): void;
+        setDescription(description: string): void;
+        start(): void;
+    }
 
+    export class Arguments {
+        public constructor(client: FrozenClient);
+
+        public readonly client: Client;
+        public readonly total: Array<ArgsObject>;
+        public readonly required: Array<ArgsObject>;
+        public readonly checked: Array<string | User>;
+        public readonly msgArgs: Array<string>;
+        public readonly message: Message;
+
+        cleanUp(): void;
+        check(message: Message, command: Command, args: Array<string>, success: () => void, failed: () => void): Promise<void> | void;
+        returnArgument(argument: ArgsObject, pos: number): Promise<string | User>;
+        run(command: Command): void;
+        get args(): Array<string | User>;
     }
 
     // JSON Object types
     type ClientOptionsObject = {
-        prefix: string,
-        withTyping: boolean
-        ownerId: string,
-        readyMessage: string,
-        game: GameObject
+        prefix?: string,
+        withTyping?: boolean
+        ownerId?: string,
+        readyMessage?: (client: FrozenClient) => string,
+        game?: GameObject
     };
 
     type GameObject = {

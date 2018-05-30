@@ -1,9 +1,9 @@
 const chalk = require("chalk").default;
 
 /**
- * This Class checks for arguments.
+ * This Class checks for arguments on commands.
  */
-class CommandArgs {
+class Arguments {
 
     constructor(client) {
         this.client = client;
@@ -14,15 +14,13 @@ class CommandArgs {
         this.message = null;
     }
 
-    /**
-     * Cleans up the Class.
-     */
     cleanUp() {
         this.client = null;
         this.total = [];
         this.required = [];
         this.checked = [];
         this.msgArgs = [];
+        this.message = null;
     }
 
     check(message, command, args, success = () => {}, failed = () => {}) {
@@ -30,7 +28,7 @@ class CommandArgs {
         this.message = message;
         this.msgArgs = args;
         for (let i = 0; i < command.args.length; i++) {
-            if (!args[i] && command.args[i].required) { return message.channel.send(`**${command.args[i].name}** is a required argument but was not found!`); } else {
+            if (!args[i] && command.args[i].required) { return message.channel.send(`**${command.args[i].name}** is a required argument but was not found.`); } else {
                 this.returnArgument(command.args[i], i)
                     .then(() => success())
                     .catch(() => failed());
@@ -54,10 +52,6 @@ class CommandArgs {
         });
     }
 
-    /**
-     * Puts the propper arguments in the propper category.
-     * @param {string} command The command to use for args.
-     */
     run(command) {
         for (const argument of command.args) {
             this.total.push(argument);
@@ -72,4 +66,4 @@ class CommandArgs {
 
 }
 
-module.exports = CommandArgs;
+module.exports = Arguments;
