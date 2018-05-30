@@ -6,6 +6,9 @@ To install *dev version* run: `npm install https://github.com/IceeMC/FrozenCord`
 
 To install run `npm install frozencord`
 
+# Support
+To get support with anything reguarding this framework or d.js you can join the support server [here](https://discord.gg/GRj8sMw)
+
 # Features
 - Commands - Wether you are making simple commands or complex commands this framework can do it.
 - Inhibitors - Wether you want to do command counts or log who ran what command this framework can do that.
