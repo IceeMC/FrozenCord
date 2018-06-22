@@ -33,10 +33,13 @@ class CommandArguments {
         this.message = message;
         this.msgArgs = args;
         for (let i = 0; i < command.args.length; i++) {
-            if (!args[i] && command.args[i].required) { return message.channel.send(`**${command.args[i].name}** is a required argument but was not found.`); } else {
+            if (!args[i] && command.args[i].required) {
+                message.channel.send(`**${command.args[i].name}** is a required argument but was not found.`);
+                break;
+            } else {
                 this.returnArgument(command.args[i], i)
-                    .then(() => success())
-                    .catch(() => failed());
+                    .then(() => { return success() })
+                    .catch(() => { return failed() });
             }
         }
     }
