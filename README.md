@@ -36,7 +36,7 @@ const client = new FrozenClient({
     ownerId: "" // A string of the owners id. Default is the id gotten from the client application.
     readyMessage: (client) => `Ready as ${client.user.tag}` // The ready message for the client.
     game: {
-        name: "cards of humanity",
+        name: (client) => `with ${client.users.size} users! | ${client.prefix}help`,
         type: "PLAYING"
     } // Sets the game of the bot.
 });
