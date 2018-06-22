@@ -99,7 +99,7 @@ class FrozenClient extends Discord.Client {
     _getCategory(parsedPath) {
         const dirs = fs.readdirSync("./commands/");
         for (let i = 0; i < dirs.length; i++) {
-            for (const pathSplit of parsedPath.split("/")) {
+            for (const pathSplit of parsedPath.split("\\")) {
                 if (pathSplit === dirs[i]) return dirs[i];
             }
         }
