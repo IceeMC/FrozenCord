@@ -28,7 +28,7 @@ class Help extends Command {
                 const notRequired = cmd.args.filter(a => !a.required).map(a => `[${a.name}]`).join(" ");
                 const usageString = `${this.client.prefix}${name} ${required}${notRequired}`;
                 helpStr +=
-`**${this.client.prefix}${name}**: \`${cmd.description || "No description provided."}\
+`**${this.client.prefix}${name}**: \`${cmd.description || "No description provided."}\`
     ↳ Aliases: ${cmd.aliases.map(a => `\`${a}\``).join(", ") || "None"}
         ↳ Usage: ${usageString}
             ↳ Permissions:
