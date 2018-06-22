@@ -188,7 +188,7 @@ declare module "frozencord" {
     };
 
     type GameObject = {
-        name: (client) => string,
+        name: (client: FrozenClient) => string,
         url?: string,
         type: "PLAYING" | "STREAMING" | "WATCHING" | "LISTENING" | number
     }
