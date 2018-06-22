@@ -225,7 +225,7 @@ class FrozenClient extends Discord.Client {
     async _handleMessage(message) {
         if (!message.content.toLowerCase().startsWith(this.prefix)) return;
 
-        const args = message.content.toLowerCase().slice(this.prefix.length).split(" ");
+        const args = message.content.slice(this.prefix.length).split(" ");
         const command = args.shift().toLowerCase();
         const cmd = this.commands.get(command) || this.aliases.get(command);
 
@@ -234,6 +234,7 @@ class FrozenClient extends Discord.Client {
             if (this.withTyping) message.channel.startTyping();
 
             // Checks if a command is for the owner or if it needs to be in a guild and the bot and user permissions.
+            if (cmd.disabled) { message.channel.stopTyping(true); return; }
             if (cmd.ownerOnly && message.author.id !== this.ownerId) { message.channel.stopTyping(true); return; }
             if (cmd.guildOnly && !message.guild) { message.channel.stopTyping(true); return; }
             if (!message.guild.me.permissions.has(cmd.botPerms) || !message.member.permissions.has(cmd.userPerms)) { message.channel.stopTyping(true); return; }
