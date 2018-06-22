@@ -1,25 +1,35 @@
 const FrozenClient = require("../FrozenClient.js"); // eslint-disable-line
-const Arguments = require("./Arguments.js");
 
 /**
  * A class that is used for commands.
- * @param {client} client The Discord.JS that created this command.
+ * @param {FrozenClient} client The FrozenClient that made this command.
  */
 
 class Command {
 
-    constructor(client) {
-        this.category = "";
+    constructor(client, {
+        category = "",
+        name = "",
+        description = "",
+        aliases = [],
+        args = [],
+        botPerms = [],
+        userPerms = [],
+        guildOnly = false,
+        ownerOnly = false,
+        disabled = false
+    }) {
+        this.category = category;
         this.client = client;
-        this.name = "";
-        this.description = "";
-        this.aliases = [];
-        this.args = [];
-        this.botPerms = [];
-        this.userPerms = [];
-        this.guildOnly = true;
-        this.ownerOnly = false;
-        this.disabled = false;
+        this.name = name;
+        this.description = description;
+        this.aliases = aliases;
+        this.args = args;
+        this.botPerms = botPerms;
+        this.userPerms = userPerms;
+        this.guildOnly = guildOnly;
+        this.ownerOnly = ownerOnly;
+        this.disabled = disabled;
     }
 
     run(message, args) { // eslint-disable-line

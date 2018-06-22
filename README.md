@@ -51,20 +51,23 @@ const { Command } = require("frozencord");
 class CommandName extends Command {
 
     constructor(client) {
-        super(client);
-        this.name = "commandName"; // The name of the command
-        this.description = "A command that can do cool stuff."; // The description of the command.
-        this.aliases = []; // An array of strings *optional*
-        this.args = [{
-            name: "argument",
-            type: "string",
-            required: true, // by default this is false but set it to true if you wish
-        }]; // An array of ArgsObject's *optional*
-        this.botPerms = ["SEND_MESSAGES"]; // An array of permissions the bot should have when the command is ran *optional*.
-        this.userPerms = []; // An array of permissions the user should have when the command is ran *optional*.
-        this.guildOnly = true; // Set this to false if you want it to be ran in pms
-        this.ownerOnly = false; // Set this to true if you want the bot owner to be the one who can run this command.
-        this.disabled = false; // Set this to true if you want this command to be disabled.
+        super(client, {
+            name: "commandName", // The name of the command
+            description: "A command that can do cool stuff.", // The description of the command.
+            aliases: [], // An array of strings *optional*
+            args: [
+                {
+                    name: "argument",
+                    type: "string",
+                    required: true, // by default this is false but set it to true if you wish
+                }
+            ], // An array of ArgsObject's *optional*
+            botPerms: ["SEND_MESSAGES"], // An array of permissions the bot should have when the command is ran *optional*.
+            userPerms: [], // An array of permissions the user should have when the command is ran *optional*.
+            guildOnly: true, // Set this to false if you want it to be ran in pms
+            ownerOnly: false, // Set this to true if you want the bot owner to be the one who can run this command.
+            disabled: false // Set this to true if you want this command to be disabled.
+        });
     }
 
     // What the command does when its ran.
@@ -84,9 +87,10 @@ const { Inhibitor } = require("frozencord");
 class InhibitorName extends Inhibitor {
 
     constructor(client) {
-        super(client);
-        this.name = "inhibitorName"; // The name of this inhibitor.
-        this.description = "A inhibitor that can do cool things."; // The description of the inhibitor.
+        super(client, {
+            name: "inhibitorName", // The name of this inhibitor.
+            description: "A inhibitor that can do cool things." // The description of the inhibitor.
+        });
     }
 
     // What the inhibitor should do after a command is executed.

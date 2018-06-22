@@ -71,7 +71,7 @@ class FrozenClient extends Discord.Client {
          * The presence the bot should startup with.
          * @default "Streaming with ${guilds}guilds | ${prefix}help"
          */
-        this.game = game || { url: "https://twitch.tv/iceemc", name: `with ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`} | ${this.prefix}help`, type: 1 };
+        this.game = game(this) || { url: "https://twitch.tv/iceemc", name: `with ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`} | ${this.prefix}help`, type: 1 };
     }
 
     /**
@@ -234,22 +234,27 @@ class FrozenClient extends Discord.Client {
             if (cmd.guildOnly && !message.guild) { message.channel.stopTyping(true); return; }
             if (!message.guild.me.permissions.has(cmd.botPerms) || !message.member.permissions.has(cmd.userPerms)) { message.channel.stopTyping(true); return; }
 
-            const Arguments = new (require("./structures/Arguments.js"))(this);
-            Arguments.run(cmd);
-            Arguments.check(message, cmd, args, async () => {
+            const CommandArguments = new (require("./structures/CommandArguments.js"))(this);
+            CommandArguments.check(message, cmd, args, async () => {
                 // Run the command then stop typing after it is ran.
-                cmd.run(message, Arguments.args);
+                try {
+                    cmd.run(message, CommandArguments.args);
+                } catch (error) {
+                    this.emit("commandError", (cmd, error));
+                }
 
                 // Run all inhibitors for the bot after the command has finished.
-                this.inhibitors.forEach(async i => { await i.run(message, cmd); });
-                message.channel.stopTyping(true);
+                this.inhibitors.forEach(async i => await i.run(message, cmd));
+                if (this.withTyping) message.channel.stopTyping(true);
 
                 // After the command clean up the args.
-                Arguments.cleanUp();
+                CommandArguments.cleanUp();
             }, () => {
-                message.channel.stopTyping(true);
-                Arguments.cleanUp();
+                if (this.withTyping) message.channel.stopTyping(true);
+                CommandArguments.cleanUp();
             });
+        } else {
+            this.emit("commandUnknown", cmd);
         }
     }
 

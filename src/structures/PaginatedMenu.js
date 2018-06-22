@@ -1,4 +1,4 @@
-const { RichEmbed } = require("discord.js");
+﻿const { RichEmbed } = require("discord.js");
 
 /**
  * A class for a paginated menu / paginator.
@@ -17,13 +17,6 @@ class PaginatedMenu {
         this._sent = null;
         this.emojis = ["⏸", "⏪", "⬅", "➡", "⏩", "🔢"];
     }
-
-    /**
-     * Checks if a hex code invalid.
-     * @param {number} code The hex code to validate.
-     * @returns {boolean}
-     * @private
-     */
 
     /**
      * Adds a page to the pages.
@@ -82,7 +75,6 @@ class PaginatedMenu {
      * Runs the pagination session.
      */
     async start() {
-        console.log(this.pages);
         if (!this.pages[0]) throw new Error("Pages cannot be empty.");
         if (!this.enabled) await this._switchPage(0);
         this._reactionCollector = this._sent.createReactionCollector((reaction, user) => this.emojis.includes(reaction.emoji.name) && user.id === this.reactor.id && reaction.remove(user).catch(() => {}), { time: 864e5 });
@@ -117,7 +109,6 @@ class PaginatedMenu {
      */
     async _switchPage(pageNumber) {
         // Wait for valid page
-        console.log(this._invalidPage(pageNumber));
         if (this._invalidPage(pageNumber)) return;
 
         /* Set the current page to the one the
@@ -130,7 +121,8 @@ class PaginatedMenu {
                 new RichEmbed()
                     .addField(this.pages[this.current].title, this.pages[this.current].description)
                     .setColor(this.color || 0xffffff)
-                    .setTitle(this.title || null)
+                    .setTitle(this.title || "")
+                    .setDescription(this.description || "")
                     .setFooter(`Showing page ${this.current + 1} of ${this.pages.length}`)
             );
             return;
@@ -141,7 +133,8 @@ class PaginatedMenu {
                 new RichEmbed()
                     .addField(this.pages[0].title, this.pages[0].description)
                     .setColor(this.color || 0xffffff)
-                    .setTitle(this.title || null)
+                    .setTitle(this.title || "")
+                    .setDescription(this.description || "")
                     .setFooter(`Showing page ${this.current + 1} of ${this.pages.length}`)
             );
             for (const emoji of this.emojis) {
@@ -174,18 +167,18 @@ ${this.reactor}, What page would you like to go to?
 
 This times out in 60 seconds.
 To cancel type \`cancel\` or \`stop\`.`);
-        this._messageCollector = this.message.createMessageCollector(m => m.author.id === this.reactor.id && m.channel.id === this.message.channel, { time: 60000 });
+        this._messageCollector = this.message.channel.createMessageCollector(m => m.author === this.reactor && m.channel === this.message.channel, { time: 60000 });
         this._messageCollector.on("collect", async m => {
-            if (/cancel|stop/.exec(m.content)) {
+            if (/cancel|stop/.test(m.content)) {
                 temp.delete();
                 this._messageCollector.stop();
                 this._messageCollector = null;
                 return;
             }
-            if (!this.pages[parseInt(m.content)]) {
+            if (!this.pages[parseInt(m.content) - 1]) {
                 const tmp = await this.message.channel.send(`Invalid page \`[${m.content}/${this.pages.length}]\``);
                 setTimeout(() => tmp.delete(), 1500);
-            } else { await this._switchPage(parseInt(m.content)); }
+            } else { await this._switchPage(parseInt(m.content) - 1); }
             temp.delete();
             this._messageCollector.stop();
             this._messageCollector = null;

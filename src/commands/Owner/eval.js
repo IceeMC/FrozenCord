@@ -4,20 +4,21 @@ const { post } = require("snekfetch");
 class Eval extends Command {
 
     constructor(client) {
-        super(client);
-        this.name = "eval";
-        this.description = "Evaluates code.";
-        this.guildOnly = true;
-        this.ownerOnly = true;
-        this.args = [
-            {
-                name: "code",
-                type: "string",
-                required: true
-            }
-        ];
-        this.botPerms = ["SEND_MESSAGES", "EMBED_LINKS"];
-        this.aliases = ["ev", "boteval"];
+        super(client, {
+            name: "eval",
+            description: "Evaluates JavaScript code.",
+            guildOnly: true,
+            ownerOnly: true,
+            args: [
+                {
+                    name: "code",
+                    type: "string",
+                    required: true
+                }
+            ],
+            botPerms: ["SEND_MESSAGES", "EMBED_LINKS"],
+            aliases: ["ev", "boteval"]
+        });
     }
 
     replace(output) {

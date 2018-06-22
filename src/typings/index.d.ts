@@ -68,6 +68,10 @@ declare module "frozencord" {
         public on(event: "voiceStateUpdate", listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
         public on(event: "warn", listener: (info: string) => void): this;
 
+        // Custom events
+        public on(event: "commandError", listener: (command: Command, error: Error) => void): this;
+        public on(event: "commandUnknown", listener: (command: Command) => void): this;
+
         // D.JS events
         public once(event: string, listener: Function): this;
         public once(event: "raw", listener: (payload: Object) => void): this;
@@ -102,22 +106,26 @@ declare module "frozencord" {
         public once(event: "userUpdate", listener: (oldUser: User, newUser: User) => void): this;
         public once(event: "voiceStateUpdate", listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
         public once(event: "warn", listener: (info: string) => void): this;
+
+        // Custom events
+        public once(event: "commandError", listener: (command: Command, error: Error) => void): this;
+        public once(event: "commandUnknown", listener: (command: Command) => void): this;
     }
 
     // Inhibitor class
     export class Inhibitor {
-        public constructor(client: FrozenClient);
+        public constructor(client: FrozenClient, options: InhibitorOptionsObject);
 
         public readonly client: FrozenClient;
         public readonly name: string;
         public readonly description: string;
 
-        run(message: Message, command: Command): Promise<void> | void;
+        public run(message: Message, command: Command): Promise<void> | void;
     }
 
     // Command class
     export class Command {
-        public constructor(client: FrozenClient);
+        public constructor(client: FrozenClient, options: CommandOptionsObject);
 
         public readonly category;
         public readonly client: FrozenClient;
@@ -132,7 +140,7 @@ declare module "frozencord" {
         public guildOnly: boolean;
         public disabled: boolean;
 
-        run(message: Message, args: Array<any>): Promise<Message | Array<Message> | void>;
+        public run(message: Message, args: Array<any>): Promise<Message | Array<Message> | void>;
     }
 
     // PaginatedMenu class
@@ -145,15 +153,15 @@ declare module "frozencord" {
         public readonly current: number;
         public readonly pages: Array<PageObject>;
 
-        addPage(title: string, description: string): number;
-        addPages(pages: Array<PageObject>): void;
-        setTitle(title: string): void;
-        setColor(color: number): void;
-        setDescription(description: string): void;
-        start(): void;
+        public addPage(title: string, description: string): number;
+        public addPages(pages: Array<PageObject>): void;
+        public setTitle(title: string): void;
+        public setColor(color: number): void;
+        public setDescription(description: string): void;
+        public start(): void;
     }
 
-    export class Arguments {
+    export class CommandArguments {
         public constructor(client: FrozenClient);
 
         public readonly client: Client;
@@ -163,11 +171,11 @@ declare module "frozencord" {
         public readonly msgArgs: Array<string>;
         public readonly message: Message;
 
-        cleanUp(): void;
-        check(message: Message, command: Command, args: Array<string>, success: () => void, failed: () => void): Promise<void> | void;
-        returnArgument(argument: ArgsObject, pos: number): Promise<string | User>;
-        run(command: Command): void;
-        get args(): Array<string | User>;
+        public cleanUp(): void;
+        public check(message: Message, command: Command, args: Array<string>, success: () => void, failed: () => void): Promise<void> | void;
+        public returnArgument(argument: ArgsObject, pos: number): Promise<string | User>;
+        public run(command: Command): void;
+        public get args(): Array<string | User>;
     }
 
     // JSON Object types
@@ -180,19 +188,37 @@ declare module "frozencord" {
     };
 
     type GameObject = {
-        name: string,
+        name: (client) => string,
         url?: string,
         type: "PLAYING" | "STREAMING" | "WATCHING" | "LISTENING" | number
     }
 
     type ArgsObject = {
         name: string,
-        type: "string" | "user",
+        type: "single-string" | "string" | "member" | "number",
         required?: boolean
     }
 
     type PageObject = {
         title: string,
+        description: string
+    }
+
+    type CommandOptionsObject = {
+        category: string,
+        name: string,
+        description: string,
+        aliases: string,
+        args: Array<ArgsObject>,
+        botPerms: Array<Permissions>,
+        userPerms: Array<Permissions>,
+        guildOnly?: boolean,
+        ownerOnly?: boolean,
+        disabled?: boolean
+    }
+
+    type InhibitorOptionsObject = {
+        name: string,
         description: string
     }
 
