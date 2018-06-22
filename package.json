@@ -1,6 +1,6 @@
 {
   "name": "frozencord",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A Discord.js command framework.",
   "main": "src/index.js",
   "types": "src/typings/index.d.ts",
