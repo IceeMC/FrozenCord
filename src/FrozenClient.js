@@ -71,7 +71,7 @@ class FrozenClient extends Discord.Client {
          * The presence the bot should startup with.
          * @default "Streaming with ${guilds}guilds | ${prefix}help"
          */
-        this.game = game(this) || { url: "https://twitch.tv/iceemc", name: `with ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`} | ${this.prefix}help`, type: 1 };
+        this.game = game.name(this) || { url: "https://twitch.tv/iceemc", name: `with ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`} | ${this.prefix}help`, type: 1 };
     }
 
     /**
