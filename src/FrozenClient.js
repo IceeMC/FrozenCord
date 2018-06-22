@@ -112,7 +112,11 @@ class FrozenClient extends Discord.Client {
     _attachEvents() {
         this.on("ready", async () => {
             await this._loadOptions(this.clientOptions);
-            this.user.setActivity(this.game.name || this.game.name(this), { url: this.game.url, type: this.game.type });
+            if (typeof this.game.name === "function") {
+                this.user.setActivity(this.game.name(this), { url: this.game.url, type: this.game.type });
+            } else {
+                this.user.setActivity(this.game.name, { url: this.game.url, type: this.game.type });
+            }
             console.log(`${chalk.bgBlueBright("INFO")} ${this.readyMessage}`);
         });
         this.on("message", message => this._handleMessage(message));
