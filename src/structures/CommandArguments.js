@@ -38,8 +38,9 @@ class CommandArguments {
                 break;
             } else {
                 this.returnArgument(command.args[i], i)
-                    .then(() => { return success() })
-                    .catch(() => { return failed() });
+                    .then(() => success())
+                    .catch(() => failed());
+                break;
             }
         }
     }
