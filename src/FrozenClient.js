@@ -71,7 +71,7 @@ class FrozenClient extends Discord.Client {
          * The presence the bot should startup with.
          * @default "Streaming with ${guilds}guilds | ${prefix}help"
          */
-        this.game = game.name(this) || { url: "https://twitch.tv/iceemc", name: `with ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`} | ${this.prefix}help`, type: 1 };
+        this.game = game || { url: "https://twitch.tv/iceemc", name: `with ${this.guilds.size > 1 ? `${this.guilds.size} guilds` : `1 guild`} | ${this.prefix}help`, type: 1 };
     }
 
     /**
@@ -112,7 +112,7 @@ class FrozenClient extends Discord.Client {
     _attachEvents() {
         this.on("ready", async () => {
             await this._loadOptions(this.clientOptions);
-            this.user.setActivity(this.game.name, { url: this.game.url, type: this.game.type });
+            this.user.setActivity(this.game.name || this.game.name(this), { url: this.game.url, type: this.game.type });
             console.log(`${chalk.bgBlueBright("INFO")} ${this.readyMessage}`);
         });
         this.on("message", message => this._handleMessage(message));
