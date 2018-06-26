@@ -223,7 +223,7 @@ class FrozenClient extends Discord.Client {
      * @param {Discord.Message} message The message object from discord.js.
      */
     async _handleMessage(message) {
-        if (!message.content.toLowerCase().startsWith(this.prefix)) return;
+        if (!message.content.toLowerCase().startsWith(this.prefix) || message.author.bot) return;
 
         const args = message.content.slice(this.prefix.length).split(" ");
         const command = args.shift().toLowerCase();
